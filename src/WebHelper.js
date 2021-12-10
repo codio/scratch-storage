@@ -82,9 +82,10 @@ class WebHelper extends Helper {
      * @param {AssetType} assetType - The type of asset to fetch.
      * @param {string} assetId - The ID of the asset to fetch: a project ID, MD5, etc.
      * @param {DataFormat} dataFormat - The file format / file extension of the asset to fetch: PNG, JPG, etc.
+     * @param {string} from - optional information for resource. used to filter storage usage.
      * @return {Promise.<Asset>} A promise for the contents of the asset.
      */
-    load (assetType, assetId, dataFormat) {
+    load (assetType, assetId, dataFormat, from) {
 
         /** @type {Array.<{url:string, result:*}>} List of URLs attempted & errors encountered. */
         const errors = [];
@@ -105,7 +106,7 @@ class WebHelper extends Helper {
             const reqConfigFunction = store.get;
 
             if (reqConfigFunction) {
-                const reqConfig = ensureRequestConfig(reqConfigFunction(asset));
+                const reqConfig = ensureRequestConfig(reqConfigFunction(asset, from));
                 if (reqConfig === false) {
                     return tryNextSource();
                 }
