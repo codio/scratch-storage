@@ -1,5 +1,5 @@
 {
-  "name": "@codio/scratch-storage",
+  "name": "@codioedu/scratch-storage",
   "version": "0.0.0-development",
   "description": "Load and store project and asset files for Scratch 3.0",
   "license": "BSD-3-Clause",
