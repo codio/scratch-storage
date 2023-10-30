@@ -40,6 +40,7 @@ jobs:
       - run: npm run build
       - run: npm test
       - uses: JS-DevTools/npm-publish@v3
+        if: github.ref_name == 'develop'
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: 'public'
