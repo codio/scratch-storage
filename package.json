@@ -1,6 +1,6 @@
 {
-  "name": "@codio/scratch-storage",
-  "version": "0.0.0-development",
+  "name": "@codioedu/scratch-storage",
+  "version": "2.3.0",
   "description": "Load and store project and asset files for Scratch 3.0",
   "license": "BSD-3-Clause",
   "homepage": "https://github.com/codio/scratch-storage#readme",
@@ -44,6 +44,7 @@
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "8.2.0",
     "@commitlint/travis-cli": "8.2.0",
+    "@jsdevtools/npm-publish": "^3.0.1",
     "@types/jest": "29.5.1",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.0.6",
