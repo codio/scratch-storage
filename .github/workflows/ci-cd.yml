@@ -39,7 +39,6 @@ jobs:
         run: npm ci
       - run: npm run build
       - run: npm test
-      - name: semantic-release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx --no -- semantic-release
+      - uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
