@@ -1,80 +1,76 @@
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
 
-const base = {
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-    devtool: 'cheap-module-source-map',
-    module: {
-        rules: [
-            {
-                include: [
-                    path.resolve('src')
-                ],
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: {
-                    plugins: [
-                        '@babel/plugin-transform-runtime'
-                    ],
-                    presets: [
-                        ['@babel/preset-env', {targets: {browsers: ['last 3 versions', 'Safari >= 8', 'iOS >= 8']}}]
-                    ],
-                    // Consider a file a "module" if import/export statements are present, or else consider it a
-                    // "script". Fixes "Cannot assign to read only property 'exports'" when using
-                    // @babel/plugin-transform-runtime with CommonJS files.
-                    sourceType: 'unambiguous'
-                }
-            },
-            {
-                test: /\.(png|svg|wav)$/,
-                loader: 'arraybuffer-loader'
+const ScratchWebpackConfigBuilder = require('scratch-webpack-configuration');
+
+const baseConfig = new ScratchWebpackConfigBuilder(
+    {
+        rootPath: path.resolve(__dirname),
+        enableReact: false,
+        enableTs: true,
+        shouldSplitChunks: false
+    })
+    .setTarget('browserslist')
+    .merge({
+        resolve: {
+            fallback: {
+                Buffer: require.resolve('buffer/')
             }
-        ]
-    },
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                include: /\.min\.js$/,
-                sourceMap: true
-            })
-        ]
-    },
-    plugins: []
-};
-
-module.exports = [
-    // Web-compatible
-    Object.assign({}, base, {
-        target: 'web',
-        entry: {
-            'scratch-storage': './src/index.js',
-            'scratch-storage.min': './src/index.js'
-        },
-        output: {
-            library: 'ScratchStorage',
-            libraryTarget: 'umd',
-            path: path.resolve('dist', 'web'),
-            filename: '[name].js'
         }
-    }),
+    });
 
-    // Node-compatible
-    Object.assign({}, base, {
-        target: 'node',
+if (!process.env.CI) {
+    baseConfig.addPlugin(new webpack.ProgressPlugin());
+}
+
+// Web-compatible
+const webConfig = baseConfig.clone()
+    .merge({
+        output: {
+            library: {
+                name: 'ScratchStorage',
+                type: 'umd2'
+            },
+            path: path.resolve(__dirname, 'dist', 'web'),
+            clean: false
+        }
+    });
+
+const webNonMinConfig = webConfig.clone()
+    .merge({
         entry: {
-            'scratch-storage': './src/index.js'
+            'scratch-storage': path.join(__dirname, './src/index.ts')
+        },
+        optimization: {
+            minimize: false
+        }
+    });
+
+const webMinConfig = webConfig.clone()
+    .merge({
+        entry: {
+            'scratch-storage.min': path.join(__dirname, './src/index.ts')
+        },
+        optimization: {
+            minimize: true
+        }
+    });
+
+// Node-compatible
+const nodeConfig = baseConfig.clone()
+    .merge({
+        entry: {
+            'scratch-storage': path.join(__dirname, './src/index.ts')
         },
         output: {
-            library: 'ScratchStorage',
-            libraryTarget: 'commonjs2',
-            path: path.resolve('dist', 'node'),
-            filename: '[name].js'
-        },
-        externals: {
-            'base64-js': true,
-            'js-md5': true,
-            'localforage': true,
-            'text-encoding': true
+            library: {
+                type: 'commonjs2'
+            },
+            chunkFormat: 'commonjs',
+            path: path.resolve(__dirname, 'dist', 'node'),
+            clean: false
         }
     })
-];
+    .addExternals(['base64-js', 'js-md5', 'localforage', 'text-encoding']);
+
+module.exports = [webNonMinConfig.get(), webMinConfig.get(), nodeConfig.get()];
