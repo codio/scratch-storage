@@ -12,6 +12,7 @@
   "browser": "./dist/web/scratch-storage.js",
   "types": "./dist/types/index.d.ts",
   "scripts": {
+    "preinstall": "npm run build",
     "build": "rimraf dist && webpack --mode=production",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "coverage": "tap ./test/{unit,integration}/*.js --coverage --coverage-report=lcov",
@@ -24,9 +25,6 @@
     "test:unit": "jest \"test[\\\\/]unit\"",
     "version": "json -f package.json -I -e \"this.repository.sha = '$(git log -n1 --pretty=format:%H)'\"",
     "watch": "webpack --watch"
-  },
-  "tap": {
-    "check-coverage": false
   },
   "tap": {
     "check-coverage": false
