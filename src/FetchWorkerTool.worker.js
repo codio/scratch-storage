@@ -1,6 +1,6 @@
 /* eslint-env worker */
 
-const crossFetch = require('cross-fetch').default;
+const crossFetch = require('cross-fetch');
 
 let jobsActive = 0;
 const complete = [];
