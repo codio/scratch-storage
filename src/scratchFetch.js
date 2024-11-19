@@ -81,7 +81,6 @@ const applyMetadata = options => {
  */
 const scratchFetch = (resource, options) => {
     const augmentedOptions = applyMetadata(options);
-    console.log('scratchFetch', resource, augmentedOptions, 'call crossFetch.fetch', fetch);
     return fetch(resource, augmentedOptions);
 };
 
