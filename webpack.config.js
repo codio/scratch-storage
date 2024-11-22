@@ -8,7 +8,8 @@ const baseConfig = new ScratchWebpackConfigBuilder(
         rootPath: path.resolve(__dirname),
         enableReact: false,
         enableTs: true,
-        shouldSplitChunks: false
+        shouldSplitChunks: false,
+        publicPath: ''
     })
     .setTarget('browserslist')
     .merge({
@@ -32,6 +33,7 @@ const webConfig = baseConfig.clone()
                 type: 'umd2'
             },
             path: path.resolve(__dirname, 'dist', 'web'),
+            publicPath: 'auto',
             clean: false
         }
     });
